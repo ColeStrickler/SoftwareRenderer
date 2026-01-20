@@ -67,9 +67,7 @@ struct Triangle3D {
 };
 
 Vec3 RotateX(const Vec3 &v, float angle);
-
 Vec3 RotateY(const Vec3 &v, float angle);
-
 Vec3 RotateZ(const Vec3 &v, float angle);
 
 
@@ -77,7 +75,10 @@ void PrintVec3(const Vec3& v);
 void PrintVec2Int(const Vec2Int& v);
 
 Vec2Int ProjectPerspective(const Vec3 &p, float f, int width, int height);
-
+Vec3 NormalizeVec3(const Vec3& v);
+Vec3 CrossProduct(const Vec3& a, const Vec3& b);
+float DotProduct(const Vec3& a, const Vec3& b);
+inline float Magnitude(const Vec3& v);
 
 
 extern Vec3 cubeVertices[8];

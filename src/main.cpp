@@ -33,6 +33,8 @@ int main(int argc, char** argv) {
 
     SDLManager* sdl = new SDLManager(WIDTH, HEIGHT);
     Renderer* renderer = new Renderer(WIDTH, HEIGHT);
+    Camera* camera  = new Camera();
+    sdl->AddCameraHook(camera);
    
 
     // 2. Allocate our own software framebuffer
@@ -68,7 +70,7 @@ int main(int argc, char** argv) {
     // Clear depth first
     renderer->ClearDepthBuffer();
     renderer->ClearFrameBufferSIMD(WHITE);
-
+    camera->UpdateCamera();
     double fps = 1.0 / dt.count();
 
     for (int i = 0; i < 12; i++) {
@@ -84,13 +86,20 @@ int main(int argc, char** argv) {
         triCopy.v1 = RotateX(RotateY(RotateZ(triCopy.v1, angleZ), angleY), angleX);
         triCopy.v2 = RotateX(RotateY(RotateZ(triCopy.v2, angleZ), angleY), angleX);
 
-        // Translate cube in front of camera
-        Vec3 cameraOffset = {0.0f, 0.0f, -10.0f};
-        triCopy.v0 = triCopy.v0 + cameraOffset;
-        triCopy.v1 = triCopy.v1 + cameraOffset;
-        triCopy.v2 = triCopy.v2 + cameraOffset;
 
-        renderer->RasterTriangle3D(triCopy);
+        camera->GetLocation();
+        camera->GetView();
+        // Translate cube in front of camera
+        Vec3 worldLoc = {0.0f, 0.0f, -10.0f};
+        triCopy.v0 = triCopy.v0 + worldLoc;
+        triCopy.v1 = triCopy.v1 + worldLoc;
+        triCopy.v2 = triCopy.v2 + worldLoc;
+
+
+
+        Triangle3D cameraSpaceTri = Triangle_WorldToCamera(triCopy, camera);
+
+        renderer->RasterTriangle3D(cameraSpaceTri);
     }
 
     // Increment rotation angles
@@ -101,6 +110,7 @@ int main(int argc, char** argv) {
     // Update SDL
     sdl->SimpleUpdateTexture(renderer->GetFrameBuffer());
     sdl->RenderTexture();
+    
 }
 
 

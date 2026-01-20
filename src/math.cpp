@@ -60,6 +60,32 @@ Vec2Int ProjectPerspective(const Vec3 &p, float f, int width, int height)
     return screen;
 }
 
+Vec3 NormalizeVec3(const Vec3 &v)
+{
+    Vec3 nVec;
+    float length = Magnitude(v);
+    if (length == 0.0f)
+        return {0.0f, 0.0f, 0.0f};
+
+    float inv = 1.0f / length;
+    return { v.x * inv, v.y * inv, v.z * inv };
+}
+
+Vec3 CrossProduct(const Vec3 &a, const Vec3 &b)
+{
+    return {(a.y*b.z) - (a.z*b.y), (a.z*b.x) - (a.x*b.z), (a.x*b.y) - (a.y*b.x)};
+}
+
+float DotProduct(const Vec3 &a, const Vec3 &b)
+{
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
+inline float Magnitude(const Vec3 &v)
+{
+    return sqrt(v.x*v.x + v.y*v.y + v.z*v.z); 
+}
+
 Vec3 RotateX(const Vec3 &v, float angle)
 {
     float c = cosf(angle);

@@ -74,4 +74,23 @@ void SDLManager::RenderTexture()
 void SDLManager::HandleEvent(SDL_Event *event)
 {
     if (event->type == SDL_QUIT) exit(0);  // case dispatch later
+    switch(event->type)
+    {
+        case SDL_KEYDOWN: HandleKeyDown(event->key.keysym.sym); break;
+        default:
+            return;
+    }
+}
+
+void SDLManager::HandleKeyDown(SDL_Keycode key)
+{
+    switch (key)
+    {
+        case SDL_KeyCode::SDLK_UP: m_Camera->MoveForward(); break;
+        case SDL_KeyCode::SDLK_DOWN: m_Camera->MoveBackward(); break;
+        case SDL_KeyCode::SDLK_LEFT: m_Camera->MoveLeft(); break;
+        case SDL_KeyCode::SDLK_RIGHT: m_Camera->MoveRight(); break;
+        default:
+            return;
+    }
 }
