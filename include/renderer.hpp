@@ -68,7 +68,7 @@ public:
 
 
     inline uint32_t* GetFrameBuffer() const {return m_FrameBuffer;} 
- 
+    
 
     
     inline void RasterizeSIMD128(int px, int py, const Edge &e0, const Edge &e1, const Edge &e2, \
@@ -90,6 +90,7 @@ public:
     void ClearFrameBufferSIMD(uint32_t color);
     void ClearFrameBuffer(uint32_t color);
     void ClearDepthBuffer();
+    int RasterCount;
 private:
     int m_HeightCanvas;
     int m_WidthCanvas;

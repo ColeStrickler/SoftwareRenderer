@@ -7,7 +7,7 @@
 #include "sdl.hpp" // manager class
 #include "renderer.hpp"
 #include "math.hpp"
-
+#include "util.hpp"
 
 
 const int WIDTH = 800;
@@ -72,25 +72,28 @@ int main(int argc, char** argv) {
     renderer->ClearFrameBufferSIMD(WHITE);
     camera->UpdateCamera();
     double fps = 1.0 / dt.count();
-
-    for (int i = 0; i < 12; i++) {
+    printf("fps %.3f\n", fps);
+    for (int x = -100; x < 100; x++)
+    for (int j = -100; j < 100; j++)
+    {
+        for (int i = 0; i < 12; i++) {
         Triangle3D triCopy = cubeTriangles[i];
 
         // Translate to origin
-        triCopy.v0 = triCopy.v0 - cubeCenter;
-        triCopy.v1 = triCopy.v1 - cubeCenter;
-        triCopy.v2 = triCopy.v2 - cubeCenter;
+        //triCopy.v0 = triCopy.v0 - cubeCenter;
+        //triCopy.v1 = triCopy.v1 - cubeCenter;
+        //triCopy.v2 = triCopy.v2 - cubeCenter;
 
         // Rotate around origin
-        triCopy.v0 = RotateX(RotateY(RotateZ(triCopy.v0, angleZ), angleY), angleX);
-        triCopy.v1 = RotateX(RotateY(RotateZ(triCopy.v1, angleZ), angleY), angleX);
-        triCopy.v2 = RotateX(RotateY(RotateZ(triCopy.v2, angleZ), angleY), angleX);
+        //triCopy.v0 = RotateX(RotateY(RotateZ(triCopy.v0, angleZ), angleY), angleX);
+        //triCopy.v1 = RotateX(RotateY(RotateZ(triCopy.v1, angleZ), angleY), angleX);
+        //triCopy.v2 = RotateX(RotateY(RotateZ(triCopy.v2, angleZ), angleY), angleX);
 
 
         camera->GetLocation();
         camera->GetView();
         // Translate cube in front of camera
-        Vec3 worldLoc = {0.0f, 0.0f, -10.0f};
+        Vec3 worldLoc = {0.0f+j*2.0f, x*2.0f, -10.0f};
         triCopy.v0 = triCopy.v0 + worldLoc;
         triCopy.v1 = triCopy.v1 + worldLoc;
         triCopy.v2 = triCopy.v2 + worldLoc;
@@ -101,6 +104,11 @@ int main(int argc, char** argv) {
 
         renderer->RasterTriangle3D(cameraSpaceTri);
     }
+
+    }
+   // printf("Raster count %d\n", renderer->RasterCount);
+    renderer->RasterCount = 0;
+    
 
     // Increment rotation angles
     angleX += 0.01f;

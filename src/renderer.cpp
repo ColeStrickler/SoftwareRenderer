@@ -84,6 +84,7 @@ inline void Renderer::RasterizeSIMD128(int px, int py, const Edge &e0, const Edg
 inline void Renderer::RasterizeSIMD256(int px, int py, const Edge &e0, const Edge &e1, const Edge &e2,
                                        float invArea, Triangle3D tri, uint32_t color)
 {
+  //  printf("here\n");
     // X = [px, px+1, ..., px+7]
     __m256i X = _mm256_set_epi32(px+7, px+6, px+5, px+4, px+3, px+2, px+1, px);
     __m256i Y = _mm256_set1_epi32(py);
@@ -149,9 +150,22 @@ inline void Renderer::RasterizeSIMD256(int px, int py, const Edge &e0, const Edg
     }
 }
 
-
+#include "util.hpp"
 void Renderer::RasterTriangle3D(Triangle3D &tri)
 {
+    //ScopeTimer scope("RasterTriangle3D");
+
+
+    /*
+        Lets make this a function --> bool ClipNearZ(tri)
+    */
+    float nearZ = 0.1f;   // pick a reasonable near plane
+    float minZ = std::min(tri.v0.z, std::min(tri.v1.z, tri.v2.z));
+    if (minZ < nearZ)
+        return;
+
+
+
 
 
     /*
@@ -167,7 +181,21 @@ void Renderer::RasterTriangle3D(Triangle3D &tri)
     int maxY = std::max(p0.y, std::max(p1.y, p2.y));
 
 
+    // Lets make this a function --> bool IsOffScreen(p0, p1, p2)
+    if (maxX < 0 || minX >= m_WidthCanvas ||
+        maxY < 0 || minY >= m_HeightCanvas)
+    {
+        return;
+    }
 
+    // --- Critical fix ---
+    minX = std::max(minX, 0);
+    maxX = std::min(maxX, m_WidthCanvas  - 1);
+    minY = std::max(minY, 0);
+    maxY = std::min(maxY, m_HeightCanvas - 1);
+
+    RasterCount++;
+    //printf("%d\n", RasterCount);
     float area = (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
     float invArea = 1.0f / area;
     int sign = (area > 0) ? 1 : -1;
@@ -229,6 +257,7 @@ void Renderer::RasterTriangle3D(Triangle3D &tri)
         }
 
     }
+   // printf("here\n");
 }
 
 inline void Renderer::PutPixelZ(int x, int y, float z, uint32_t color)
