@@ -7,13 +7,14 @@
 #include <algorithm>
 #include <immintrin.h>
 #include "math.hpp"
+#include "camera.hpp"
 
 #define ARGB(a, r, g, b) ((uint32_t)( ((a) & 0xFF) << 24 | ((r) & 0xFF) << 16 | ((g) & 0xFF) << 8 | ((b) & 0xFF) ))
 #define BLACK (ARGB(0xff, 0, 0, 0))
 #define WHITE (ARGB(0xff, 0xff, 0xff, 0xff))
 #define PURPLE (ARGB(0xff, 0xff, 0x00, 0xff))
 
-
+class Camera;
 #define EDGE_FUNCTION(xA,yA,xB,yB,px,py) \
     ((yA - yB) * (px) + (xB - xA) * (py) + (xA * yB - xB * yA))
 
@@ -78,10 +79,10 @@ public:
 
     void SetRenderClass(RASTERIZERPERFORMANCECLASS perf) {m_RasterPerfOption = perf;}
     //void RasterTriangle2D(Triangle& tri);
-    void RasterTriangle3D(Triangle3D& tri);
+    void RasterTriangle3D(Triangle3D& tri, Camera* camera);
 
     inline void PutPixelZ(int x, int y, float z, uint32_t color);
-
+    void ToggleBackFaceCulling() {m_BackFaceCulling = !m_BackFaceCulling;}
     int GetWidth() const {return m_WidthCanvas;}
     int GetHeight() const {return m_HeightCanvas;}
     void PutPixel(int x, int y, uint32_t color);
@@ -92,6 +93,7 @@ public:
     void ClearDepthBuffer();
     int RasterCount;
 private:
+    bool m_BackFaceCulling;
     int m_HeightCanvas;
     int m_WidthCanvas;
     uint32_t*  m_FrameBuffer;

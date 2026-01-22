@@ -16,28 +16,28 @@ Vec3 cubeVertices[8] = {
 
 Triangle3D cubeTriangles[12] = {
     // Back face
-    {cubeVertices[0], cubeVertices[1], cubeVertices[2]},
-    {cubeVertices[0], cubeVertices[2], cubeVertices[3]},
+    {cubeVertices[0], cubeVertices[1], cubeVertices[2], Vec3{0.0f, 0.0f, -1.0f}},
+    {cubeVertices[0], cubeVertices[2], cubeVertices[3], Vec3{0.0f, 0.0f, -1.0f}},
 
     // Front face
-    {cubeVertices[4], cubeVertices[6], cubeVertices[5]},
-    {cubeVertices[4], cubeVertices[7], cubeVertices[6]},
+    {cubeVertices[4], cubeVertices[6], cubeVertices[5], Vec3{0.0f, 0.0f, 1.0f}},
+    {cubeVertices[4], cubeVertices[7], cubeVertices[6], Vec3{0.0f, 0.0f, 1.0f}},
 
     // Left face
-    {cubeVertices[0], cubeVertices[3], cubeVertices[7]},
-    {cubeVertices[0], cubeVertices[7], cubeVertices[4]},
+    {cubeVertices[0], cubeVertices[3], cubeVertices[7], Vec3{-1.0f, 0.0f, 0.0f}},
+    {cubeVertices[0], cubeVertices[7], cubeVertices[4], Vec3{-1.0f, 0.0f, 0.0f}},
 
     // Right face
-    {cubeVertices[1], cubeVertices[5], cubeVertices[6]},
-    {cubeVertices[1], cubeVertices[6], cubeVertices[2]},
+    {cubeVertices[1], cubeVertices[5], cubeVertices[6], Vec3{1.0f, 0.0f, 0.0f}},
+    {cubeVertices[1], cubeVertices[6], cubeVertices[2], Vec3{1.0f, 0.0f, 0.0f}},
 
     // Top face
-    {cubeVertices[3], cubeVertices[2], cubeVertices[6]},
-    {cubeVertices[3], cubeVertices[6], cubeVertices[7]},
+    {cubeVertices[3], cubeVertices[2], cubeVertices[6], Vec3{0.0f, 1.0f, 0.0f}},
+    {cubeVertices[3], cubeVertices[6], cubeVertices[7], Vec3{0.0f, 1.0f, 0.0f}},
 
     // Bottom face
-    {cubeVertices[0], cubeVertices[4], cubeVertices[5]},
-    {cubeVertices[0], cubeVertices[5], cubeVertices[1]},
+    {cubeVertices[0], cubeVertices[4], cubeVertices[5], Vec3{0.0f, -1.0f, 0.0f}},
+    {cubeVertices[0], cubeVertices[5], cubeVertices[1], Vec3{0.0f, -1.0f, 0.0f}},
 };
 
 

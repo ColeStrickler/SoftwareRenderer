@@ -4,6 +4,7 @@ Renderer::Renderer(int width, int height) : m_HeightCanvas(height), m_WidthCanva
 {
     m_FrameBuffer = new uint32_t[width*height];
     m_DepthBuffer = new float[width*height];
+    m_BackFaceCulling = true;
 }
 
 inline void Renderer::RasterizeSIMD128(int px, int py, const Edge &e0, const Edge &e1, const Edge &e2, float invArea, Triangle3D tri, uint32_t color)
@@ -151,11 +152,15 @@ inline void Renderer::RasterizeSIMD256(int px, int py, const Edge &e0, const Edg
 }
 
 #include "util.hpp"
-void Renderer::RasterTriangle3D(Triangle3D &tri)
+void Renderer::RasterTriangle3D(Triangle3D &tri, Camera* camera)
 {
     //ScopeTimer scope("RasterTriangle3D");
 
+    Vec3 triCenter = (tri.v0 + tri.v1 + tri.v2) * (1.0f / 3.0f);
+    Vec3 toTri = NormalizeVec3(triCenter);  // since camera at origin in view space
 
+    if (m_BackFaceCulling && DotProduct(toTri, tri.Normal) <= 0.0f)
+        return;
     /*
         Lets make this a function --> bool ClipNearZ(tri)
     */

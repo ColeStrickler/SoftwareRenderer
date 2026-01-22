@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
     Renderer* renderer = new Renderer(WIDTH, HEIGHT);
     Camera* camera  = new Camera();
     sdl->AddCameraHook(camera);
+    sdl->AddRendererHook(renderer);
    
 
     // 2. Allocate our own software framebuffer
@@ -56,57 +57,59 @@ int main(int argc, char** argv) {
     Vec3 cubeCenter = {0.0f, 0.0f, 0.0f}; // 10 units in front
 
     while (running) {
-    static auto last = std::chrono::high_resolution_clock::now();
-    auto now = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> dt = now - last;
-    last = now;
-    tick += dt.count();
+        //ScopeTimer scope("RenderLoop");
+        static auto last = std::chrono::high_resolution_clock::now();
+        auto now = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> dt = now - last;
+        last = now;
+        tick += dt.count();
 
-    sdl->PollEvent();
-    if (tick < frame_threshold)
-        continue;
-    tick = 0.0f;
+        sdl->PollEvent();
+        if (tick < frame_threshold)
+            continue;
+        tick = 0.0f;
 
-    // Clear depth first
-    renderer->ClearDepthBuffer();
-    renderer->ClearFrameBufferSIMD(WHITE);
-    camera->UpdateCamera();
-    double fps = 1.0 / dt.count();
-    printf("fps %.3f\n", fps);
-    for (int x = -100; x < 100; x++)
-    for (int j = -100; j < 100; j++)
-    {
-        for (int i = 0; i < 12; i++) {
-        Triangle3D triCopy = cubeTriangles[i];
+        // Clear depth first
+        renderer->ClearDepthBuffer();
+        renderer->ClearFrameBufferSIMD(WHITE);
+        camera->UpdateCamera();
+        double fps = 1.0 / dt.count();
+        //printf("fps %.3f\n", fps);
+        for (int x = -20; x < 30; x++)
+        for (int j = -20; j < 30; j++)
+        {
+            for (int i = 0; i < 12; i++) {
+            Triangle3D triCopy = cubeTriangles[i];
 
-        // Translate to origin
-        //triCopy.v0 = triCopy.v0 - cubeCenter;
-        //triCopy.v1 = triCopy.v1 - cubeCenter;
-        //triCopy.v2 = triCopy.v2 - cubeCenter;
+            // Translate to origin
+            //triCopy.v0 = triCopy.v0 - cubeCenter;
+            //triCopy.v1 = triCopy.v1 - cubeCenter;
+            //triCopy.v2 = triCopy.v2 - cubeCenter;
 
-        // Rotate around origin
-        //triCopy.v0 = RotateX(RotateY(RotateZ(triCopy.v0, angleZ), angleY), angleX);
-        //triCopy.v1 = RotateX(RotateY(RotateZ(triCopy.v1, angleZ), angleY), angleX);
-        //triCopy.v2 = RotateX(RotateY(RotateZ(triCopy.v2, angleZ), angleY), angleX);
-
-
-        camera->GetLocation();
-        camera->GetView();
-        // Translate cube in front of camera
-        Vec3 worldLoc = {0.0f+j*2.0f, x*2.0f, -10.0f};
-        triCopy.v0 = triCopy.v0 + worldLoc;
-        triCopy.v1 = triCopy.v1 + worldLoc;
-        triCopy.v2 = triCopy.v2 + worldLoc;
+            // Rotate around origin
+            triCopy.v0 = RotateX(RotateY(RotateZ(triCopy.v0, angleZ), angleY), angleX);
+            triCopy.v1 = RotateX(RotateY(RotateZ(triCopy.v1, angleZ), angleY), angleX);
+            triCopy.v2 = RotateX(RotateY(RotateZ(triCopy.v2, angleZ), angleY), angleX);
+           //triCopy.Normal = RotateX(RotateY(RotateZ(triCopy.Normal, angleZ), angleY), angleX);
 
 
+            camera->GetLocation();
+            camera->GetView();
+            // Translate cube in front of camera
+            Vec3 worldLoc = {0.0f+j*4.0f, x*4.0f, -10.0f};
+            triCopy.v0 = triCopy.v0 + worldLoc;
+            triCopy.v1 = triCopy.v1 + worldLoc;
+            triCopy.v2 = triCopy.v2 + worldLoc;
 
-        Triangle3D cameraSpaceTri = Triangle_WorldToCamera(triCopy, camera);
 
-        renderer->RasterTriangle3D(cameraSpaceTri);
+            Triangle3D cameraSpaceTri = Triangle_WorldToCamera(triCopy, camera);
+
+            // backface culling tested here
+            renderer->RasterTriangle3D(cameraSpaceTri, camera);
+        }
+
     }
-
-    }
-   // printf("Raster count %d\n", renderer->RasterCount);
+    printf("Raster count %d\n", renderer->RasterCount);
     renderer->RasterCount = 0;
     
 

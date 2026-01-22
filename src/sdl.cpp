@@ -90,6 +90,7 @@ void SDLManager::HandleKeyDown(SDL_Keycode key)
         case SDL_KeyCode::SDLK_DOWN: m_Camera->MoveBackward(); break;
         case SDL_KeyCode::SDLK_LEFT: m_Camera->MoveLeft(); break;
         case SDL_KeyCode::SDLK_RIGHT: m_Camera->MoveRight(); break;
+        case SDL_KeyCode::SDLK_SPACE: m_Renderer->ToggleBackFaceCulling(); break;
         default:
             return;
     }

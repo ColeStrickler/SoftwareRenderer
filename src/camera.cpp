@@ -1,5 +1,5 @@
 #include "camera.hpp"
-
+#include "math.hpp"
 const Vec3 WorldUp{0.0f, 1.0f, 0.0f};
 
 Camera::Camera() : m_CameraSpeed(0.5f)
@@ -68,5 +68,7 @@ Triangle3D Triangle_WorldToCamera(const Triangle3D &tri, Camera *camera)
     triN.v0 = WorldToCamera(tri.v0, camera);
     triN.v1 = WorldToCamera(tri.v1, camera);
     triN.v2 = WorldToCamera(tri.v2, camera);
+    triN.Normal = NormalizeVec3(CrossProduct(triN.v1 - triN.v0, triN.v2 - triN.v0));
+    // NormalizeVec3(WorldToCamera(CrossProduct(tri.v1 - tri.v0, tri.v2 - tri.v0), camera));
     return triN;
 }

@@ -18,13 +18,14 @@ public:
     void RenderTexture();
 
     void AddCameraHook(Camera* camera) {m_Camera = camera; }
+    void AddRendererHook(Renderer* renderer) {m_Renderer = renderer;}
 private:
     void HandleEvent(SDL_Event* event);
     void HandleKeyDown(SDL_Keycode key);
 
 
         
-
+    Renderer* m_Renderer;
     Camera* m_Camera;
     int m_Height;
     int m_Width;

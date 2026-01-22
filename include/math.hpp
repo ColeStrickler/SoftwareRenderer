@@ -64,6 +64,7 @@ struct Vec2Int {
 
 struct Triangle3D { 
     Vec3 v0, v1, v2; 
+    Vec3 Normal;
 };
 
 Vec3 RotateX(const Vec3 &v, float angle);
